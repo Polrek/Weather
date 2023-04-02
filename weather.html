@@ -1,0 +1,44 @@
+<!DOCTYPE html>  
+<html lang="en">  
+  <head><title>Ajax Weather</title>  
+  <meta charset="utf-8">  
+  </head>  
+  <body>  
+    <h1>Weather Service</h1>  
+     <p>The current weather in <span id="city"></span> is as follows:</p> 
+     <ul> 
+         <li>The temperature is <span id="temp"></span> <sup>o</sup>C</li>  
+         <li>The humidity is <span id="humid"></span>%</li> 
+         <li>The general picture is <span id="general"></span></li> 
+     </ul> 
+    <script> 
+        let xhRequest = new XMLHttpRequest(); 
+        xhRequest.responseType = 'json'; //makes the response type json (not text/plain) but this also means it wont output directly to the <p> as text anymore
+        xhRequest.open("GET", "https://api.openweathermap.org/data/2.5/weather?q=wellington&units=metric&appid=e61746468012f6dd45f5a3aca675fc1b"); //opens the connect request to API endpoint
+        //xhRequest.open("GET", "weather.json"); //if the json file was local (same dir as this html file), then this is how to retrieve it
+        xhRequest.send(); //sends the get request
+                
+        xhRequest.onload = function() //when the response comes back, this fn defines what happens
+        { 
+            if(xhRequest.status == 200) 
+            { 
+                const weatherData = xhRequest.response; 
+                console.log(weatherData);
+                document.getElementById("city").innerText=weatherData.name;
+                document.getElementById("temp").innerText=weatherData.main.temp; 
+                document.getElementById("humid").innerText=weatherData.main.humidity; 
+                document.getElementById("general").innerText=weatherData.weather[0].description;   
+            } 
+            else 
+            { 
+                alert("Response status was " + xhRequest.status); //every other code than HTTP200
+            } 
+        } 
+ 
+        xhRequest.onerror = function() //when no response, this fn defines what happens
+        {  
+            alert('Connection error'); 
+        } 
+  </script> 
+  </body>  
+</html>
